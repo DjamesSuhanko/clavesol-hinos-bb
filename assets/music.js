@@ -1,4 +1,4 @@
-import {eventAt} from './music-timing.mjs';
+import {eventAt,fermataClock} from './music-timing.mjs';
 import {SynthTransport,formatTime} from './music-synth.mjs';
 const get=id=>document.getElementById(id);
 const zoom=get('score-zoom'),sheets=[...document.querySelectorAll('.score-sheet')];
@@ -6,6 +6,7 @@ const audio=get('score-audio'),player=get('score-player'),cursor=get('score-curs
 const status=get('playback-status'),followCursor=get('follow-cursor');
 const toggle=get('play-toggle'),progress=get('playback-progress');
 let timeline,transport,frame,lastIndex=-1,lastMeasure=-1;
+let playbackTime=time=>time;
 const currentTime=()=>transport?transport.currentTime:audio?.currentTime||0;
 const playing=()=>transport?transport.playing:audio&&!audio.paused&&!audio.ended;
 zoom?.addEventListener('change',()=>{for(const sheet of sheets)sheet.style.width=`${zoom.value}%`;});
@@ -42,7 +43,11 @@ if(player){
   if(player.dataset.playback==='generated'){
     try{
       const sequence=await readJSON(player.dataset.sequence);
-      transport=new SynthTransport(sequence,ended);
+      playbackTime=fermataClock(sequence.fermatas);
+      const performed={...sequence,duration:playbackTime(sequence.duration),notes:sequence.notes.map(note=>({
+        ...note,time:playbackTime(note.time),duration:playbackTime(note.time+note.duration)-playbackTime(note.time)
+      }))};
+      transport=new SynthTransport(performed,ended);
       toggle.disabled=false;
       toggle.addEventListener('click',async()=>{
         toggle.disabled=true;
@@ -88,7 +93,9 @@ if(player){
     cancelAnimationFrame(frame);lastIndex=-1;draw();status.textContent='Pronto para reproduzir';
   });
   if(player.dataset.timing)try{
-    timeline=await readJSON(player.dataset.timing);draw();
+    timeline=await readJSON(player.dataset.timing);
+    timeline={...timeline,duration:playbackTime(timeline.duration),events:timeline.events.map(event=>({...event,time:playbackTime(event.time)}))};
+    draw();
     if(audio)status.textContent='Pronto para reproduzir';
   }catch{if(transport||audio)status.textContent='Som disponível; não foi possível carregar o cursor. Recarregue a página.';}
 }

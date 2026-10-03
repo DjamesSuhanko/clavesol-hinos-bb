@@ -66,6 +66,7 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
             raise ValueError('MusicXML: saltos exigem Playback: recorded')
     raw_notes, tempos, markings = [], {}, {}
     score_end = 0.0
+    fermatas = set()
     segments, measure_starts = {}, {}
     for part_index, part in enumerate(parts):
         divisions, transpose, base = 1.0, 0, 0.0
@@ -117,6 +118,8 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
                         maximum = max(maximum, cursor)
                     maximum = max(maximum, onset + duration)
                     segments[(measure_number, round(base + onset, 9))] = base + onset
+                    if any(local(node) == 'fermata' for node in item.iter()):
+                        fermatas.add((round(base + onset, 9), round(base + onset + duration, 9)))
                     pitch = child(item, 'pitch')
                     if pitch is None:
                         continue
@@ -175,6 +178,9 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
     marking = f'♩ = {initial:g}' if tempo_override is not None else markings.get(0.0, f'♩ = {initial:g}')
     result = {'version': 1, 'duration': duration, 'quarterBpm': initial,
               'marking': marking, 'notes': notes}
+    if fermatas:
+        result['fermatas'] = [{'start': round(seconds(start), 6), 'end': round(seconds(end), 6)}
+                              for start, end in sorted(fermatas)]
     if include_cursor:
         result['cursorEvents'] = [dict(measure=key[0], time=round(seconds(quarter), 6))
                                   for key, quarter in sorted(segments.items())]

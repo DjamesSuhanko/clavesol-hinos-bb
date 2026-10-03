@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
-import {eventAt} from '../assets/music-timing.mjs';
+import {eventAt,fermataClock} from '../assets/music-timing.mjs';
 import {formatTime} from '../assets/music-synth.mjs';
 
 const source=readFileSync(new URL('../assets/music.js',import.meta.url),'utf8')
   .replace("import {SynthTransport,formatTime} from './music-synth.mjs';",'')
-  .replace("import {eventAt} from './music-timing.mjs';",'');
+  .replace("import {eventAt,fermataClock} from './music-timing.mjs';",'');
 function element() {
   return {handlers:{},style:{},hidden:false,dataset:{},textContent:'',checked:true,
     addEventListener(name,fn){this.handlers[name]=fn;},
@@ -14,7 +14,7 @@ function element() {
     getBoundingClientRect(){return {left:40,right:60,top:50,bottom:80};},
     scrollIntoView(){this.scrolled=true;}};
 }
-async function player({audio=true,timing=true,pages=2,generated=false,fail=false,quarterBpm=60,marking='♩ = 60'}={}) {
+async function player({audio=true,timing=true,pages=2,generated=false,fail=false,quarterBpm=60,marking='♩ = 60',fermatas=[]}={}) {
   const ids={};
   for(const id of ['score-player','play-toggle','playback-progress','playback-time','mute-score','tempo-display','score-zoom','score-audio','score-cursor','playback-status','follow-cursor','current-measure','restart-score','playback-speed','playback-bpm','original-tempo'])ids[id]=element();
   let fetches=0;
@@ -32,14 +32,14 @@ async function player({audio=true,timing=true,pages=2,generated=false,fail=false
                 {time:5,page:2,measure:2,x:20,y:20,width:3,height:5},
                 {time:8,page:1,measure:1,x:10,y:10,width:3,height:5}];
   await runInNewContext(`(async()=>{${source}})()`,{
-    document:{getElementById:id=>ids[id],querySelectorAll:()=>sheets},eventAt,formatTime,SynthTransport:FakeSynth,
-    fetch:async()=>{fetches++;return {ok:!fail,json:async()=>({duration:10,events,marking,quarterBpm,notes:[]})};},
+    document:{getElementById:id=>ids[id],querySelectorAll:()=>sheets},eventAt,fermataClock,formatTime,SynthTransport:FakeSynth,
+    fetch:async()=>{fetches++;return {ok:!fail,json:async()=>({duration:10,events,marking,quarterBpm,fermatas,notes:[{time:0,duration:5,midi:60}]})};},
     requestAnimationFrame:()=>1,cancelAnimationFrame(){},innerHeight:900,
   });
   return {ids,sheets,fetches};
 }
 class FakeSynth {
-  constructor(sequence,onEnded){FakeSynth.latest=this;this.rate=1;this.duration=sequence.duration;this.currentTime=0;this.playing=false;this.onEnded=onEnded;}
+  constructor(sequence,onEnded){FakeSynth.latest=this;this.sequence=sequence;this.rate=1;this.duration=sequence.duration;this.currentTime=0;this.playing=false;this.onEnded=onEnded;}
   async play(){this.playing=true;}
   pause(){this.playing=false;}
   seek(time){this.currentTime=time;}
@@ -98,3 +98,15 @@ assert.equal(dotted.ids['playback-bpm'].value,'90');
 dotted.ids['playback-bpm'].value='60';dotted.ids['playback-bpm'].handlers.change();
 assert.equal(FakeSynth.latest.rate,2/3);
 assert.equal(dotted.ids['tempo-display'].textContent,'Original: ♩. = 60');
+
+const held=await player({generated:true,audio:false,fermatas:[{start:0,end:5},{start:0,end:5}]});
+assert.equal(FakeSynth.latest.duration,12.5);
+assert.equal(FakeSynth.latest.sequence.notes[0].duration,7.5);
+held.ids['playback-progress'].value='560';held.ids['playback-progress'].handlers.input();
+assert.equal(held.ids['current-measure'].textContent,'Compasso 1 de 2');
+held.ids['playback-progress'].value='600';held.ids['playback-progress'].handlers.input();
+assert.equal(held.ids['current-measure'].textContent,'Compasso 2 de 2');
+held.ids['playback-bpm'].value='120';held.ids['playback-bpm'].handlers.change();
+assert.equal(FakeSynth.latest.rate,2);
+assert.equal(FakeSynth.latest.currentTime,7.5);
+console.log('Fermatas: single extension, sustained sound, cursor, seeking and BPM: OK');
