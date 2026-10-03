@@ -14,9 +14,9 @@ function element() {
     getBoundingClientRect(){return {left:40,right:60,top:50,bottom:80};},
     scrollIntoView(){this.scrolled=true;}};
 }
-async function player({audio=true,timing=true,pages=2,generated=false,fail=false}={}) {
+async function player({audio=true,timing=true,pages=2,generated=false,fail=false,quarterBpm=60,marking='♩ = 60'}={}) {
   const ids={};
-  for(const id of ['score-player','play-toggle','playback-progress','playback-time','mute-score','tempo-display','score-zoom','score-audio','score-cursor','playback-status','follow-cursor','current-measure','restart-score','playback-speed'])ids[id]=element();
+  for(const id of ['score-player','play-toggle','playback-progress','playback-time','mute-score','tempo-display','score-zoom','score-audio','score-cursor','playback-status','follow-cursor','current-measure','restart-score','playback-speed','playback-bpm','original-tempo'])ids[id]=element();
   let fetches=0;
   if(!generated)ids['play-toggle']=null;
   if(!audio&&!generated)ids['score-player']=null;
@@ -33,13 +33,13 @@ async function player({audio=true,timing=true,pages=2,generated=false,fail=false
                 {time:8,page:1,measure:1,x:10,y:10,width:3,height:5}];
   await runInNewContext(`(async()=>{${source}})()`,{
     document:{getElementById:id=>ids[id],querySelectorAll:()=>sheets},eventAt,formatTime,SynthTransport:FakeSynth,
-    fetch:async()=>{fetches++;return {ok:!fail,json:async()=>({duration:10,events,marking:'♩ = 60',notes:[]})};},
+    fetch:async()=>{fetches++;return {ok:!fail,json:async()=>({duration:10,events,marking,quarterBpm,notes:[]})};},
     requestAnimationFrame:()=>1,cancelAnimationFrame(){},innerHeight:900,
   });
   return {ids,sheets,fetches};
 }
 class FakeSynth {
-  constructor(sequence,onEnded){this.duration=sequence.duration;this.currentTime=0;this.playing=false;this.onEnded=onEnded;}
+  constructor(sequence,onEnded){FakeSynth.latest=this;this.rate=1;this.duration=sequence.duration;this.currentTime=0;this.playing=false;this.onEnded=onEnded;}
   async play(){this.playing=true;}
   pause(){this.playing=false;}
   seek(time){this.currentTime=time;}
@@ -73,11 +73,28 @@ await g['play-toggle'].handlers.click();assert.equal(g['play-toggle'].textConten
 g['playback-progress'].value='500';g['playback-progress'].handlers.input();
 assert.equal(g['score-cursor'].parentElement,generated.sheets[1]);
 g['mute-score'].handlers.change({target:{checked:true}});
-g['playback-speed'].handlers.change({target:{value:'0.5'}});
-assert.equal(g['tempo-display'].textContent,'Andamento: ♩ = 60 × 0,5');
+g['playback-bpm'].value='30';g['playback-bpm'].handlers.change();
+assert.equal(FakeSynth.latest.rate,.5);
+assert.equal(FakeSynth.latest.currentTime,5);
+assert.equal(FakeSynth.latest.playing,true);
+for(const invalid of ['', '0', '-20', 'Infinity', 'NaN', '241']){
+ g['playback-bpm'].value=invalid;g['playback-bpm'].handlers.change();
+ assert.equal(FakeSynth.latest.rate,.5);assert.equal(g['playback-bpm'].value,'30');
+}
+g['playback-bpm'].value='72.5';g['playback-bpm'].handlers.change();
+assert.equal(FakeSynth.latest.rate,72.5/60);
+g['original-tempo'].handlers.click();assert.equal(FakeSynth.latest.rate,1);
+assert.equal(g['playback-bpm'].value,'60');
+assert.equal(g['tempo-display'].textContent,'Original: ♩ = 60');
 await g['play-toggle'].handlers.click();assert.equal(g['play-toggle'].textContent,'Reproduzir');
 g['restart-score'].handlers.click();assert.equal(g['playback-time'].textContent,'0:00 / 0:10');
 const failed=await player({generated:true,audio:false,timing:false,fail:true});
 assert.equal(failed.ids['play-toggle'].disabled,true);
 assert.match(failed.ids['playback-status'].textContent,/Não foi possível/);
 console.log('Generated player: playback, seeking, tempo, mute, restart and loading failure: OK');
+
+const dotted=await player({generated:true,audio:false,quarterBpm:90,marking:'♩. = 60'});
+assert.equal(dotted.ids['playback-bpm'].value,'90');
+dotted.ids['playback-bpm'].value='60';dotted.ids['playback-bpm'].handlers.change();
+assert.equal(FakeSynth.latest.rate,2/3);
+assert.equal(dotted.ids['tempo-display'].textContent,'Original: ♩. = 60');

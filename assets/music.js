@@ -55,10 +55,22 @@ if(player){
       });
       progress.addEventListener('input',()=>{transport.seek(Number(progress.value)*transport.duration/1000);draw();});
       get('mute-score').addEventListener('change',event=>transport.setMuted(event.target.checked));
-      get('playback-speed').addEventListener('change',event=>{
-        transport.setRate(Number(event.target.value));
-        get('tempo-display').textContent=`Andamento: ${sequence.marking} × ${transport.rate.toLocaleString('pt-BR')}`;
-      });
+      const bpm=get('playback-bpm'),originalTempo=get('original-tempo');
+      const originalBpm=Number(sequence.quarterBpm);
+      let selectedBpm=originalBpm;
+      bpm.min=String(originalBpm*.1);bpm.max=String(originalBpm*4);
+      bpm.value=String(originalBpm);bpm.disabled=false;originalTempo.disabled=false;
+      function changeTempo(value){
+        if(!Number.isFinite(value)||value<Number(bpm.min)||value>Number(bpm.max)){
+          bpm.value=String(selectedBpm);return;
+        }
+        selectedBpm=value;bpm.value=String(value);
+        transport.setRate(value/originalBpm);
+        get('tempo-display').textContent=`Original: ${sequence.marking}`;
+        draw();
+      }
+      bpm.addEventListener('change',()=>changeTempo(bpm.value.trim()===''?NaN:Number(bpm.value)));
+      originalTempo.addEventListener('click',()=>changeTempo(originalBpm));
       status.textContent='Pronto para reproduzir';draw();
     }catch{status.textContent='Não foi possível carregar a partitura para reprodução. Recarregue a página.';}
   }else if(audio){

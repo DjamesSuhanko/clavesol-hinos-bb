@@ -43,7 +43,7 @@ def score_body(score, catalog, base):
     if score.playback == 'generated':
         timing = f' data-timing="{assets}/timing.json"' if score.timing else ''
         follow = '<label><input id="follow-cursor" type="checkbox" checked> Acompanhar cursor</label><span id="current-measure"></span>' if score.timing else ''
-        player = f'''<div class="score-player" id="score-player" data-playback="generated" data-sequence="{assets}/sequence.json"{timing} data-measures="{score.measures}"><div class="player-main"><button id="play-toggle" class="play-toggle" type="button">Reproduzir</button><input id="playback-progress" type="range" min="0" max="1000" value="0" aria-label="Posição da reprodução"><span id="playback-time">0:00 / 0:00</span></div><div class="player-options"><button id="restart-score" type="button">Voltar ao início</button><label for="playback-speed">Velocidade</label><select id="playback-speed"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>Original</option><option value="1.25">125%</option><option value="1.5">150%</option></select><span id="tempo-display">Andamento: {E(score.sequence['marking'])}</span><label><input id="mute-score" type="checkbox"> Mudo para solfejo</label>{follow}</div><p id="playback-status" role="status">Carregando partitura…</p></div>'''
+        player = f'''<div class="score-player" id="score-player" data-playback="generated" data-sequence="{assets}/sequence.json"{timing} data-measures="{score.measures}"><div class="player-main"><button id="play-toggle" class="play-toggle" type="button">Reproduzir</button><input id="playback-progress" type="range" min="0" max="1000" value="0" aria-label="Posição da reprodução"><span id="playback-time">0:00 / 0:00</span></div><div class="player-options"><button id="restart-score" type="button">Voltar ao início</button><label for="playback-bpm">Andamento (♩ BPM)</label><input id="playback-bpm" type="number" min="{score.sequence['quarterBpm'] * .1:g}" max="{score.sequence['quarterBpm'] * 4:g}" step="any" value="{score.sequence['quarterBpm']:g}" disabled aria-describedby="tempo-display"><button id="original-tempo" type="button" disabled>Andamento original</button><span id="tempo-display">Original: {E(score.sequence['marking'])}</span><label><input id="mute-score" type="checkbox"> Mudo para solfejo</label>{follow}</div><p id="playback-status" role="status">Carregando partitura…</p></div>'''
     elif score.audio:
         sources = ''.join(f'<source src="{assets}/{name}" type="{mime}">' for name, mime in score.audio)
         timing = f' data-timing="{assets}/timing.json"' if score.timing else ''
@@ -63,7 +63,8 @@ def score_body(score, catalog, base):
     return f'''<section class="article-layout score-section"><nav class="breadcrumbs" aria-label="Caminho da partitura">{'<span>/</span>'.join(crumbs)}</nav><p class="eyebrow">ESTANTE DE PARTITURAS</p><h1>{E(score.title)}</h1><p class="lead">{E(subtitle)}</p><p>{E(score.description)}</p><div class="score-toolbar">{toolbar}</div>{player}{pager}{''.join(sheets)}<article class="prose score-notes">{notes}</article></section>{script}'''
 
 
-def build_music(out, base, page, catalog):
+def build_music(out, base, page, catalog, external=None):
+    external = external or {}
     def save(route, title, body):
         target = out / route
         target.mkdir(parents=True, exist_ok=True)
@@ -71,7 +72,9 @@ def build_music(out, base, page, catalog):
 
     def group_card(group):
         count = sum(s.key.startswith(group.key + '/') for s in catalog.scores)
-        return f'<article class="card"><div class="card-body"><p class="eyebrow">{quantity(count, "partitura")}</p><h2><a href="{base}/partituras/{group.key}/">{E(group.title)}</a></h2><p>{E(group.description)}</p><a class="text-link" href="{base}/partituras/{group.key}/">Explorar {E(group.title)}</a></div></article>'
+        count += sum(len(value['scores']) for key, value in external.items() if key == group.key or key.startswith(group.key + '/'))
+        explore = external.get(group.key, {}).get('url', f'{base}/partituras/{group.key}/')
+        return f'<article class="card"><div class="card-body"><p class="eyebrow">{quantity(count, "partitura")}</p><h2><a href="{base}/partituras/{group.key}/">{E(group.title)}</a></h2><p>{E(group.description)}</p><a class="text-link" href="{E(explore)}">Explorar {E(group.title)}</a></div></article>'
 
     categories = [g for key, g in catalog.groups.items() if '/' not in key]
     intro = f'<section class="category-page"><p class="eyebrow">A SUA ESTANTE MUSICAL</p><h1>Partituras para<br><em>ler, ouvir e tocar.</em></h1><p class="lead">Escolha uma categoria para encontrar os estudos e as coleções.</p><div class="cards score-categories">{"".join(group_card(g) for g in categories)}</div></section>'
