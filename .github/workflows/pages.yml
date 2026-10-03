@@ -31,6 +31,9 @@ jobs:
       - run: python tests/cache.test.py
       - run: python tests/seo.test.py
       - run: pip install -r requirements.txt
+      - run: python tests/fermatas.test.py
+      - run: python tests/import-sync.test.py
+      - run: python tests/repeats.test.py
       - uses: actions/configure-pages@v5
         id: pages
       - run: python build.py

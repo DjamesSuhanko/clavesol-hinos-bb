@@ -2,6 +2,7 @@
 from pathlib import Path
 import math
 import xml.etree.ElementTree as ET
+from musicxml_repeats import playback_order
 
 
 STEPS = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
@@ -60,10 +61,12 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
         raise ValueError('MusicXML: nenhuma parte musical encontrada')
 
     for item in root.iter():
-        if local(item) in ('repeat', 'ending', 'grace', 'unpitched'):
-            raise ValueError('MusicXML: repetições, casas, ornamentos e percussão exigem Playback: recorded')
+        if local(item) in ('grace', 'unpitched'):
+            raise ValueError('MusicXML: ornamentos e percussão exigem Playback: recorded')
         if local(item) == 'sound' and any(item.get(key) for key in ('dacapo', 'dalsegno', 'tocoda', 'fine')):
             raise ValueError('MusicXML: saltos exigem Playback: recorded')
+    order = playback_order(parts)
+    repeated = order != list(range(len(order)))
     raw_notes, tempos, markings = [], {}, {}
     score_end = 0.0
     fermatas = set()
@@ -71,7 +74,40 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
     for part_index, part in enumerate(parts):
         divisions, transpose, base = 1.0, 0, 0.0
         open_ties = {}
-        for measure_number, measure in enumerate((item for item in part if local(item) == 'measure'), 1):
+        written = [item for item in part if local(item) == 'measure']
+        # Restore notation state when jumping back or skipping an ending.
+        contexts = []
+        saved_divisions, saved_transpose, saved_tempo = 1.0, 0, None
+        for measure in written:
+            contexts.append((saved_divisions, saved_transpose, saved_tempo))
+            for item in measure:
+                if local(item) == 'attributes':
+                    value = text(item, 'divisions')
+                    if value is not None:
+                        saved_divisions = number(value, 'divisions')
+                    transposition = child(item, 'transpose')
+                    if transposition is not None:
+                        saved_transpose = float(text(transposition, 'chromatic', '0')) + 12 * int(text(transposition, 'octave-change', '0'))
+                elif local(item) == 'sound' and item.get('tempo'):
+                    saved_tempo = number(item.get('tempo'), 'andamento')
+                elif local(item) == 'direction':
+                    sound = child(item, 'sound')
+                    marking = tempo_marking(item)
+                    if sound is not None and sound.get('tempo'):
+                        saved_tempo = number(sound.get('tempo'), 'andamento')
+                    elif marking:
+                        saved_tempo = marking[0]
+        previous_index = -1
+        part_order = order if repeated else range(len(written))
+        for measure_number, source_index in enumerate(part_order, 1):
+            measure = written[source_index]
+            if source_index != previous_index + 1:
+                divisions, transpose, restored_tempo = contexts[source_index]
+                if restored_tempo is not None:
+                    tempos[base] = restored_tempo
+                if source_index <= previous_index:
+                    open_ties.clear()
+            previous_index = source_index
             measure_starts[(measure_number, round(base, 9))] = base
             cursor = maximum = last_onset = 0.0
             for item in measure:
@@ -103,9 +139,6 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
                     maximum = max(maximum, cursor)
                     if cursor < -1e-9:
                         raise ValueError('MusicXML: backup ultrapassa o início do compasso')
-                elif tag == 'barline':
-                    if any(local(node) in ('repeat', 'ending') for node in item.iter()):
-                        raise ValueError('MusicXML: repetições e casas ainda exigem áudio gravado (Playback: recorded)')
                 elif tag == 'note':
                     if child(item, 'grace') is not None:
                         continue
@@ -186,4 +219,10 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
                                   for key, quarter in sorted(segments.items())]
         result['measureStarts'] = [dict(measure=key[0], time=round(seconds(quarter), 6))
                                    for key, quarter in sorted(measure_starts.items())]
+    if repeated:
+        result['measureOrder'] = [index+1 for index in order]
+        if include_cursor:
+            for event in result['cursorEvents'] + result['measureStarts']:
+                event['visit'] = event['measure']
+                event['measure'] = order[event['visit']-1] + 1
     return result

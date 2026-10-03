@@ -48,16 +48,30 @@ def synchronize_media(media, sequence):
                 raise ValueError('eventos ausentes, inválidos ou fora de ordem')
         measures = sequence['measureStarts']
         segments = sequence['cursorEvents']
+        # MuseScore can expose invisible voice-gap segments (sx=0) that
+        # MusicXML represents as <forward>, with no corresponding note/rest.
+        # Only discard them when doing so explains the entire excess count.
+        if len(events['sposXML']) > len(segments):
+            elements = {e.attrib['id']: e for e in trees['sposXML'].findall('elements/element')}
+            empty = [event for event in events['sposXML']
+                     if float(elements[event.attrib['elid']].attrib['sx']) == 0]
+            if len(events['sposXML']) - len(empty) == len(segments):
+                parent = trees['sposXML'].find('events')
+                for event in empty:
+                    parent.remove(event)
+                events['sposXML'] = parent.findall('event')
+                times['sposXML'] = [float(e.attrib['position']) / 1000 for e in events['sposXML']]
         if len(events['mposXML']) != len(measures) or len(events['sposXML']) != len(segments):
             raise ValueError('quantidade de compassos ou posições diferente entre MuseScore e MusicXML')
-        if [m['measure'] for m in measures] != list(range(1, len(measures) + 1)):
+        if [m.get('visit', m['measure']) for m in measures] != list(range(1, len(measures) + 1)):
             raise ValueError('partes com compassos desalinhados não são suportadas')
         measure_elements = {e.attrib['id'] for e in trees['mposXML'].findall('elements/element')}
         for index, event in enumerate(events['mposXML']):
-            if event.attrib['elid'] != str(index) or event.attrib['elid'] not in measure_elements:
-                raise ValueError('ordem de compassos incompatível com reprodução linear')
+            if event.attrib['elid'] != str(measures[index]['measure'] - 1) or event.attrib['elid'] not in measure_elements:
+                raise ValueError('percurso de compassos diferente entre MuseScore e MusicXML')
         for time, segment in zip(times['sposXML'], segments):
-            if bisect_right(times['mposXML'], time) != segment['measure']:
+            visit = bisect_right(times['mposXML'], time)
+            if not visit or measures[visit-1]['measure'] != segment['measure'] or segment.get('visit', visit) != visit:
                 raise ValueError('posição associada a um compasso diferente no MusicXML')
         max_difference = max(abs(old - event['time']) for old, event in zip(times['sposXML'], segments))
         for field, expected in [('mposXML', measures), ('sposXML', segments)]:
