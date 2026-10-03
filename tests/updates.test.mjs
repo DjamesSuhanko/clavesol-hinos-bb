@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {runInNewContext} from 'node:vm';
+const code=readFileSync(new URL('../assets/updates.js',import.meta.url),'utf8');
+const old='a'.repeat(20),fresh='b'.repeat(20);
+const tick=()=>new Promise(setImmediate);
+async function scenario(result,{hidden=false,current=old,url='https://clavesol.com.br/artigos/a/?x=1#trecho',storage=new Map(),noStorage=false,base='/'}={}){
+ let now=100000,count=0;
+ const nodes=[],events={},windowEvents={},redirects=[];
+ function element(tag,href,download=false){return {tag,href,children:[],handlers:{},getAttribute:()=>href,hasAttribute:()=>download,setAttribute(){},append(...children){this.children.push(...children)},addEventListener(name,fn){this.handlers[name]=fn},remove(){this.removed=true}};}
+ const links=[element('a',base+'partituras/?q=teste#pagina-1'),element('a','#conteudo'),element('a',base+'assets/score.pdf',true),element('a','https://example.com/'),element('a',base+'assets/music/score.musicxml'),element('a','/outro-projeto/')];
+ const document={hidden,currentScript:{dataset:{version:current,manifest:base+'version.json'}},body:{append:n=>nodes.push(n)},querySelectorAll:()=>links,addEventListener:(name,fn)=>events[name]=fn,createElement:element};
+ const location={href:url,replace:href=>redirects.push(href)};
+ runInNewContext(code,{document,window:{addEventListener:(name,fn)=>windowEvents[name]=fn},URL,location,localStorage:{getItem:key=>{if(noStorage)throw Error();return storage.get(key)},setItem:(key,value)=>{if(noStorage)throw Error();storage.set(key,value)}},Date:{now:()=>now},fetch:async(url,options)=>{count++;assert.equal(options.cache,'no-store');assert.equal(url.pathname,base+'version.json');assert.ok(url.searchParams.has('check'));if(result instanceof Error)throw result;return {ok:true,json:async()=>({version:result})}}});
+ await tick();
+ return {nodes,document,events,windowEvents,redirects,links,storage,count:()=>count,advance:()=>now+=60001};
+}
+const matching=await scenario(old);
+assert.equal(matching.nodes.length,0);
+assert.equal(matching.links[0].href,`https://clavesol.com.br/partituras/?q=teste&_cs=${old}#pagina-1`);
+assert.equal(matching.links[1].href,'#conteudo');assert.equal(matching.links[2].href,'/assets/score.pdf');
+assert.equal(matching.links[3].href,'https://example.com/');assert.equal(matching.links[4].href,'/assets/music/score.musicxml');
+const newer=await scenario(fresh);assert.equal(newer.nodes.length,1);
+const notice=newer.nodes[0];assert.equal(notice.children[1].textContent,'Atualizar');
+assert.equal(notice.children[1].href,`https://clavesol.com.br/artigos/a/?x=1&_cs=${fresh}#trecho`);
+notice.children[1].handlers.click();assert.equal(newer.storage.get('clavesol:accepted:/'),fresh);
+assert.ok(newer.links[0].href.includes(`_cs=${fresh}`));
+const nextPage=await scenario(fresh,{current:fresh,storage:newer.storage});
+assert.equal(nextPage.nodes.length,0);assert.ok(nextPage.links[0].href.includes(`_cs=${fresh}`));
+const stale=await scenario(fresh,{storage:newer.storage});assert.equal(stale.nodes.length,0);assert.equal(stale.redirects.length,1);
+const delayed=await scenario(fresh,{storage:newer.storage,url:`https://clavesol.com.br/?_cs=${fresh}`});
+assert.equal(delayed.redirects.length,0);assert.equal(delayed.nodes[0].children[1].textContent,'Tentar novamente');
+assert.ok(delayed.nodes[0].children[1].href.includes('_cs_retry='));
+notice.children[2].handlers.click();assert.equal(notice.removed,true);
+newer.advance();await newer.events.visibilitychange();assert.equal(newer.nodes.length,1);
+assert.equal((await scenario(new Error('offline'))).nodes.length,0);
+assert.equal((await scenario('bad-version')).nodes.length,0);
+assert.equal((await scenario(fresh,{noStorage:true})).nodes.length,1);
+const tab=await scenario(old,{hidden:true});assert.equal(tab.count(),0);tab.document.hidden=false;await tab.events.visibilitychange();assert.equal(tab.count(),1);await tab.events.visibilitychange();assert.equal(tab.count(),1);tab.advance();await tab.events.visibilitychange();assert.equal(tab.count(),2);
+const background=await scenario(fresh,{hidden:true,storage:newer.storage});background.document.hidden=false;await background.events.visibilitychange();assert.equal(background.redirects.length,0);
+background.windowEvents.pageshow({persisted:true});await tick();assert.equal(background.redirects.length,1);
+const subpath=await scenario(old,{base:'/clavesol/',url:'https://example.com/clavesol/'});
+assert.equal(subpath.links[5].href,'/outro-projeto/');assert.ok(subpath.links[0].href.includes('/clavesol/partituras/'));
+console.log('Page version propagation, accepted release, history, delayed CDN loop guard, storage failure, playback-safe visibility and throttling: OK');
