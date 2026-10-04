@@ -18,7 +18,7 @@ def score_card(score, base, catalog):
     if score.downloads:
         name, label = score.downloads[0]
         download = f'<a class="download" href="{assets}/{name}" download>Baixar {label}</a>'
-    return f'<article class="score-card">{thumb}<div><p class="eyebrow">{E(catalog.groups[score.parent].title)}</p><h3>{E(score.title)}</h3><p>{E(meta)}</p><a class="button" href="{base}/{score.route}/">Abrir partitura</a>{download}</div></article>'
+    return f'<article class="score-card" data-search="{E(str(score.lesson or "") + " " + score.title + " " + score.author + " " + score.instrument)}">{thumb}<div><p class="eyebrow">{E(catalog.groups[score.parent].title)}</p><h3>{E(score.title)}</h3><p>{E(meta)}</p><a class="button" href="{base}/{score.route}/">Abrir partitura</a>{download}</div></article>'
 
 
 def featured_score(catalog, base):

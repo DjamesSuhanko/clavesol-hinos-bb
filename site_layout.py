@@ -1,7 +1,9 @@
+from list_search import add_search
 from html import escape as E
 BASE=""
 cats={'gem':('GEM','Grupo de Ensino Musical','Fundamentos, leitura e prática para aprender em conjunto.'),'artigos':('Artigos','Tudo sobre música','Ideias e ferramentas para a música na orquestra e em casa.'),'doar':('Doações','Apoie o Clave Sol','Instrumentos, materiais e outras formas de contribuir com a música.'),'luthier':('Luthier','Serviços de luthier','O cuidado com o instrumento também faz parte da música.'),'links':('Links','Aplicativos musicais','Ferramentas para escrever, ouvir e compreender o som.'),'tutoriais':('Tutoriais','Dicas e técnicas','Um passo de cada vez. Mais confiança a cada ensaio.')}
 def page(title,body,base):
+ body=add_search(body,base)
  global BASE
  BASE=base
  nav=''.join(f'<a href="https://clavesol.com.br/{k}/">{v[0]}</a>' for k,v in cats.items())
