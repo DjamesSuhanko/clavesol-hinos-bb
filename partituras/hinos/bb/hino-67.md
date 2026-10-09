@@ -1,4 +1,4 @@
-Title: Hino 67
+Title: Hino 67 — "Vinde a Mim!"
 Author: 
 Instrument: Parte I e II
 Lesson: 67

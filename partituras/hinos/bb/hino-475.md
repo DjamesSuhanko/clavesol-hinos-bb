@@ -1,4 +1,4 @@
-Title: Hino 475
+Title: Hino 475 — Se eu for aqui provado
 Author: 
 Instrument: Parte I e II
 Lesson: 475

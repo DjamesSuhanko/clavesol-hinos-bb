@@ -1,4 +1,4 @@
-Title: Hino 457
+Title: Hino 457 — Comigo está Jesus
 Author: 
 Instrument: Parte I e II
 Lesson: 457

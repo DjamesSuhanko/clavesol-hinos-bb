@@ -9,7 +9,12 @@ export class SynthTransport{
     this.context=null;this.master=null;this.startedAt=0;this.origin=0;this.timer=0;
     this.scheduledUntil=0;this.nodes=[];this.playing=false;this.muted=false;
   }
-  get duration(){return this.sequence.duration;}
+  get duration(){return this.end ?? this.sequence.duration;}
+  setEnd(end){
+    this.pause();
+    this.end=Number.isFinite(end)&&end>0?Math.min(end,this.sequence.duration):this.sequence.duration;
+    this.position=0;
+  }
   get currentTime(){
     if(!this.playing||!this.context)return this.position;
     return Math.min(this.duration,this.origin+(this.context.currentTime-this.startedAt)*this.rate);
@@ -66,7 +71,7 @@ export class SynthTransport{
     }
     const horizon=Math.min(this.duration,nowSource+.4*this.rate);
     for(const note of this.sequence.notes){
-      const end=note.time+note.duration;
+      const end=Math.min(note.time+note.duration,this.duration);
       const overlaps=initial&&note.time<nowSource&&end>nowSource;
       if(!(overlaps||(note.time>=this.scheduledUntil&&note.time<horizon)))continue;
       const sourceStart=Math.max(note.time,nowSource);

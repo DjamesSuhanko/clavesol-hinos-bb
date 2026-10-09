@@ -1,4 +1,4 @@
-Title: Hino 247
+Title: Hino 247 — Se fores tentado
 Author: 
 Instrument: Parte I e II
 Lesson: 247

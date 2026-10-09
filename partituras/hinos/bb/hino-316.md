@@ -1,4 +1,4 @@
-Title: Hino 316
+Title: Hino 316 — Tua vida é triste?
 Author: 
 Instrument: Parte I e II
 Lesson: 316

@@ -1,4 +1,4 @@
-Title: Hino 149
+Title: Hino 149 — Ó irmãos, por fé, louvemos a Jesus
 Author: 
 Instrument: Parte I e II
 Lesson: 149

@@ -9,14 +9,14 @@ const source=readFileSync(new URL('../assets/music.js',import.meta.url),'utf8')
   .replace("import {eventAt,fermataClock} from './music-timing.mjs';",'');
 function element() {
   return {handlers:{},style:{},hidden:false,dataset:{},textContent:'',checked:true,
-    addEventListener(name,fn){this.handlers[name]=fn;},
+    addEventListener(name,fn){this.handlers[name]=fn;},setAttribute(name,value){this[name]=value;},
     append(child){child.parentElement=this;},
     getBoundingClientRect(){return {left:40,right:60,top:50,bottom:80};},
     scrollIntoView(){this.scrolled=true;}};
 }
-async function player({audio=true,timing=true,pages=2,generated=false,fail=false,quarterBpm=60,marking='♩ = 60',fermatas=[]}={}) {
+async function player({audio=true,timing=true,pages=2,generated=false,fail=false,quarterBpm=60,marking='♩ = 60',fermatas=[],introEnd}={}) {
   const ids={};
-  for(const id of ['score-player','play-toggle','playback-progress','playback-time','mute-score','tempo-display','score-zoom','score-audio','score-cursor','playback-status','follow-cursor','current-measure','restart-score','playback-speed','playback-bpm','original-tempo'])ids[id]=element();
+  for(const id of ['score-player','play-toggle','playback-progress','playback-time','mute-score','tempo-display','score-zoom','score-audio','score-cursor','playback-status','follow-cursor','current-measure','restart-score','playback-speed','playback-bpm','original-tempo','play-full','play-intro'])ids[id]=element();
   let fetches=0;
   if(!generated)ids['play-toggle']=null;
   if(!audio&&!generated)ids['score-player']=null;
@@ -33,7 +33,7 @@ async function player({audio=true,timing=true,pages=2,generated=false,fail=false
                 {time:8,page:1,measure:1,x:10,y:10,width:3,height:5}];
   await runInNewContext(`(async()=>{${source}})()`,{
     document:{getElementById:id=>ids[id],querySelectorAll:()=>sheets},eventAt,fermataClock,formatTime,SynthTransport:FakeSynth,
-    fetch:async()=>{fetches++;return {ok:!fail,json:async()=>({duration:10,events,marking,quarterBpm,fermatas,notes:[{time:0,duration:5,midi:60}]})};},
+    fetch:async()=>{fetches++;return {ok:!fail,json:async()=>({duration:10,events,marking,quarterBpm,fermatas,introEnd,notes:[{time:0,duration:5,midi:60}]})};},
     requestAnimationFrame:()=>1,cancelAnimationFrame(){},innerHeight:900,
   });
   return {ids,sheets,fetches};
@@ -43,6 +43,7 @@ class FakeSynth {
   async play(){this.playing=true;}
   pause(){this.playing=false;}
   seek(time){this.currentTime=time;}
+  setEnd(end){this.pause();this.duration=end;this.currentTime=0;}
   setRate(rate){this.rate=rate;}
   setMuted(muted){this.muted=muted;}
 }
@@ -110,3 +111,14 @@ held.ids['playback-bpm'].value='120';held.ids['playback-bpm'].handlers.change();
 assert.equal(FakeSynth.latest.rate,2);
 assert.equal(FakeSynth.latest.currentTime,7.5);
 console.log('Fermatas: single extension, sustained sound, cursor, seeking and BPM: OK');
+
+const intro=await player({generated:true,introEnd:3,fermatas:[{start:2,end:3}]});
+intro.ids['play-intro'].handlers.click();
+assert.equal(FakeSynth.latest.duration,3.5);
+assert.equal(intro.ids['play-intro']['aria-pressed'],'true');
+intro.ids['playback-progress'].value=1000;intro.ids['playback-progress'].handlers.input();
+assert.equal(FakeSynth.latest.currentTime,3.5);
+intro.ids['play-full'].handlers.click();assert.equal(FakeSynth.latest.duration,10.5);assert.equal(FakeSynth.latest.currentTime,0);
+const noStar=await player({generated:true});noStar.ids['play-intro'].handlers.click();
+assert.equal(FakeSynth.latest.duration,10);assert.match(noStar.ids['playback-status'].textContent,/hino completo/);
+console.log('Introduction: first cutoff, fermatas, seeking, full mode and no-star fallback: OK');

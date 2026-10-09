@@ -1,4 +1,4 @@
-Title: Hino 138
+Title: Hino 138 — Louvemos ao bom Jesus
 Author: 
 Instrument: Parte I e II
 Lesson: 138

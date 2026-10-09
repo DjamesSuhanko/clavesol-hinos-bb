@@ -1,4 +1,4 @@
-Title: Hino 6
+Title: Hino 6 — Glória ao Justo, fiel Cordeiro!
 Author: 
 Instrument: Parte I e II
 Lesson: 6

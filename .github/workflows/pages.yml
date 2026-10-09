@@ -28,6 +28,7 @@ jobs:
       - run: node tests/music.test.mjs
       - run: node tests/music-player.test.mjs
       - run: node tests/music-synth.test.mjs
+      - run: python tests/introduction.test.py
       - run: node tests/updates.test.mjs
       - run: python tests/cache.test.py
       - run: python tests/seo.test.py

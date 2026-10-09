@@ -1,4 +1,4 @@
-Title: Hino 92
+Title: Hino 92 — O santo Evangelho
 Author: 
 Instrument: Parte I e II
 Lesson: 92

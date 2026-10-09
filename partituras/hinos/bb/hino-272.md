@@ -1,4 +1,4 @@
-Title: Hino 272
+Title: Hino 272 — Louvarei ao bom Jesus
 Author: 
 Instrument: Parte I e II
 Lesson: 272

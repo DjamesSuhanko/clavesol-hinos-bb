@@ -70,6 +70,7 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
     raw_notes, tempos, markings = [], {}, {}
     score_end = 0.0
     fermatas = set()
+    intro_markers = []
     segments, measure_starts = {}, {}
     for part_index, part in enumerate(parts):
         divisions, transpose, base = 1.0, 0, 0.0
@@ -112,6 +113,10 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
             cursor = maximum = last_onset = 0.0
             for item in measure:
                 tag = local(item)
+                if tag in ('direction', 'harmony'):
+                    marker_text = ''.join(item.itertext()) + ''.join(node.get('text', '') for node in item.iter())
+                    if '*' in marker_text or '∗' in marker_text:
+                        intro_markers.append((base + cursor + float(text(item, 'offset', '0')) / divisions, part_index))
                 if tag == 'attributes':
                     value = text(item, 'divisions')
                     if value is not None:
@@ -174,7 +179,7 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
                         if 'start' not in ties:
                             del open_ties[key]
                         continue
-                    note = {'quarter': absolute, 'quarterDuration': duration, 'midi': midi}
+                    note = {'quarter': absolute, 'quarterDuration': duration, 'midi': midi, 'part': part_index}
                     raw_notes.append(note)
                     if 'start' in ties:
                         open_ties[key] = len(raw_notes) - 1
@@ -211,6 +216,14 @@ def parse_musicxml(path: Path, tempo_override=None, *, include_cursor=False):
     marking = f'♩ = {initial:g}' if tempo_override is not None else markings.get(0.0, f'♩ = {initial:g}')
     result = {'version': 1, 'duration': duration, 'quarterBpm': initial,
               'marking': marking, 'notes': notes}
+    if intro_markers:
+        # Use the first performed occurrence, including ties, before repeat returns.
+        marker, marked_part = min(intro_markers)
+        ends = [n['quarter'] + n['quarterDuration'] for n in raw_notes
+                if n['part'] == marked_part and n['quarter'] <= marker + 1e-7
+                and n['quarter'] + n['quarterDuration'] > marker + 1e-7]
+        if ends:
+            result['introEnd'] = round(min(duration, seconds(max(ends))), 6)
     if fermatas:
         result['fermatas'] = [{'start': round(seconds(start), 6), 'end': round(seconds(end), 6)}
                               for start, end in sorted(fermatas)]

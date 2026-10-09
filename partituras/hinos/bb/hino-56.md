@@ -1,4 +1,4 @@
-Title: Hino 56
+Title: Hino 56 — Põe em Deus a confiança
 Author: 
 Instrument: Parte I e II
 Lesson: 56

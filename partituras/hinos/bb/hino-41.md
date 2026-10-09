@@ -1,4 +1,4 @@
-Title: Hino 41
+Title: Hino 41 — O teu coração vem a Cristo entregar
 Author: 
 Instrument: Parte I e II
 Lesson: 41

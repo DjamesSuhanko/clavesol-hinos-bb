@@ -19,7 +19,7 @@ function draw(follow=false){
   }
   if(!timeline||!cursor)return;
   const index=eventAt(timeline.events,time);
-  cursor.hidden=index<0||time>=timeline.duration;
+  cursor.hidden=index<0||time>=(transport?.duration??timeline.duration);
   if(index<0)return;
   const event=timeline.events[index],sheet=sheets[(event.page??1)-1];
   if(!sheet){cursor.hidden=true;return;}
@@ -48,6 +48,19 @@ if(player){
         ...note,time:playbackTime(note.time),duration:playbackTime(note.time+note.duration)-playbackTime(note.time)
       }))};
       transport=new SynthTransport(performed,ended);
+      const fullButton=get('play-full'),introButton=get('play-intro');
+      const introEnd=Number(sequence.introEnd);
+      const hasIntro=Number.isFinite(introEnd)&&introEnd>0&&introEnd<=sequence.duration;
+      function selectMode(intro){
+        transport.setEnd(intro&&hasIntro?playbackTime(introEnd):performed.duration);
+        cancelAnimationFrame(frame);lastIndex=-1;
+        fullButton?.setAttribute('aria-pressed',String(!intro));
+        introButton?.setAttribute('aria-pressed',String(intro));
+        status.textContent=intro?(hasIntro?'Introdução: toca até o fim da nota marcada com asterisco.':'Sem asterisco identificado: será tocado o hino completo.'):'Pronto para reproduzir';
+        draw();
+      }
+      if(fullButton){fullButton.disabled=false;fullButton.addEventListener('click',()=>selectMode(false));}
+      if(introButton){introButton.disabled=false;introButton.addEventListener('click',()=>selectMode(true));}
       toggle.disabled=false;
       toggle.addEventListener('click',async()=>{
         toggle.disabled=true;

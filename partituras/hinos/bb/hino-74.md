@@ -1,4 +1,4 @@
-Title: Hino 74
+Title: Hino 74 — Vamos produzir frutos de louvor
 Author: 
 Instrument: Parte I e II
 Lesson: 74

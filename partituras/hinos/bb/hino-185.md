@@ -1,4 +1,4 @@
-Title: Hino 185
+Title: Hino 185 — Deus mandou Sua Luz
 Author: 
 Instrument: Parte I e II
 Lesson: 185

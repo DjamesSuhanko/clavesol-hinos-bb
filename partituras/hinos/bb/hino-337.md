@@ -1,4 +1,4 @@
-Title: Hino 337
+Title: Hino 337 — Por fé seguimos ao Senhor
 Author: 
 Instrument: Parte I e II
 Lesson: 337
