@@ -1,6 +1,6 @@
 # Clave Sol — Hinário Bb
 
-241 partituras já aferidas, com os arquivos originais SVG, MusicXML e MuseScore, player e cursor sincronizado. Não há exportação PDF.
+486 partituras já aferidas, com os arquivos originais SVG, MusicXML e MuseScore, player e cursor sincronizado. Não há exportação PDF.
 
 ## Ativar o GitHub Pages
 
@@ -33,3 +33,18 @@ Com MuseScore instalado, use neste repositório:
 ```
 
 Confira o resultado local antes de fazer commit e push. Não altere a coleção em `hinario.json`: cada repositório contém apenas seu próprio hinário. Os links de navegação retornam ao blog principal. Aparência e player são cópias da versão validada do Clave Sol; alterações futuras nesses componentes devem ser aplicadas aos três repositórios.
+
+
+## Clave de Sol oitava abaixo nas vozes graves
+
+As pautas anteriormente em clave de Fá usam agora a clave de Sol com o pequeno **8 abaixo**. A região escrita fica uma oitava acima, mas tenor e baixo continuam soando na altura anterior. A transposição do instrumento em Si♭ é preservada, assim como a pauta superior, as letras, as repetições e as introduções.
+
+A alteração foi aplicada aos arquivos MuseScore (`score.mscz`) e MusicXML, com reexportação das páginas SVG e do cursor. No MusicXML, `clef-octave-change=-1` determina a posição gráfica; os valores de altura das notas permanecem iguais para conservar a reprodução. Não se deve aumentar também os valores de `pitch/octave`.
+
+O script `scripts/treble_octave_below.py` reproduz a migração. Ele prepara os arquivos em uma pasta externa, compara a sequência completa de notas, tempos, fermatas, introdução e percurso do cursor, e verifica as letras antes de substituir os arquivos. Use `--apply` para aplicar; sem essa opção, apenas prepara e valida. Os arquivos anteriores são copiados para `backup/` dentro da pasta de preparação.
+
+```bash
+.venv/bin/python scripts/treble_octave_below.py --stage /caminho/fora/do/repositorio --jobs 4 --apply
+```
+
+A exportação usa o MuseScore instalado, com miniaturas em 72 dpi e páginas SVG vetoriais. O mapa do cursor é recalculado com a escala correspondente. Executar novamente sobre partituras já convertidas não modifica seus arquivos.
