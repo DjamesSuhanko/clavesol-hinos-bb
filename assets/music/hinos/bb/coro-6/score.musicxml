@@ -3,8 +3,8 @@
 <score-partwise version="4.0">
   <identification>
     <encoding>
-      <software>MuseScore Studio 4.7.5</software>
-      <encoding-date>2026-10-12</encoding-date>
+      <software>MuseScore Studio 4.7.6</software>
+      <encoding-date>2026-11-04</encoding-date>
       <supports element="accidental" type="yes"/>
       <supports element="beam" type="yes"/>
       <supports element="print" attribute="new-page" type="yes" value="yes"/>
@@ -114,7 +114,7 @@
             <left-margin>0</left-margin>
             <right-margin>0</right-margin>
             </system-margins>
-          <top-system-distance>170</top-system-distance>
+          <top-system-distance>177.64</top-system-distance>
           </system-layout>
         </print>
       <attributes>
@@ -135,18 +135,24 @@
           <chromatic>-2</chromatic>
           </transpose>
         </attributes>
+      <harmony print-frame="no">
+        <root>
+          <root-step>A</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <direction placement="above" system="only-top">
         <direction-type>
-          <words default-x="-35.98" relative-x="-98.21" relative-y="37" font-weight="bold" font-size="12">(</words>
+          <words default-x="-35.98" default-y="13.52" relative-y="37" font-weight="bold" font-size="12">(</words>
           </direction-type>
         <direction-type>
-          <metronome parentheses="no" default-x="-35.98" relative-x="-98.21" relative-y="37">
+          <metronome parentheses="no" default-x="-35.98" default-y="13.52" relative-y="37">
             <beat-unit>quarter</beat-unit>
             <per-minute>60</per-minute>
             </metronome>
           </direction-type>
         <direction-type>
-          <words default-x="-35.98" relative-x="-98.21" relative-y="37" font-weight="bold" font-size="12"> - 76)</words>
+          <words default-x="-35.98" default-y="13.52" relative-y="37" font-weight="bold" font-size="12"> - 76)</words>
           </direction-type>
         <sound tempo="60"/>
         </direction>
@@ -374,6 +380,12 @@
       <backup>
         <duration>16</duration>
         </backup>
+      <harmony print-frame="no">
+        <root>
+          <root-step>E</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-40">
         <pitch>
           <step>E</step>
@@ -475,6 +487,12 @@
         <type>eighth</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>E</root-step>
+          </root>
+        <kind text="7">dominant</kind>
+        </harmony>
       <note default-x="158.62" default-y="-40">
         <pitch>
           <step>E</step>
@@ -553,6 +571,12 @@
         </note>
       </measure>
     <measure number="4" width="210.9">
+      <harmony print-frame="no">
+        <root>
+          <root-step>A</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-40">
         <pitch>
           <step>E</step>
@@ -727,6 +751,12 @@
         <type>16th</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>A</root-step>
+          </root>
+        <kind text="7">dominant</kind>
+        </harmony>
       <note default-x="238.81" default-y="-25">
         <pitch>
           <step>A</step>
@@ -754,6 +784,12 @@
         </note>
       </measure>
     <measure number="6" width="251.64">
+      <harmony print-frame="no">
+        <root>
+          <root-step>D</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-25">
         <pitch>
           <step>A</step>
@@ -864,6 +900,12 @@
         </note>
       </measure>
     <measure number="7" width="292.58">
+      <harmony print-frame="no">
+        <root>
+          <root-step>E</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-25">
         <pitch>
           <step>A</step>
@@ -1021,6 +1063,12 @@
         </note>
       </measure>
     <measure number="8" width="201.21">
+      <harmony print-frame="no">
+        <root>
+          <root-step>A</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-40">
         <pitch>
           <step>E</step>

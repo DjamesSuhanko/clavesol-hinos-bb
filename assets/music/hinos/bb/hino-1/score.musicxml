@@ -3,8 +3,8 @@
 <score-partwise version="4.0">
   <identification>
     <encoding>
-      <software>MuseScore Studio 4.7.5</software>
-      <encoding-date>2026-10-12</encoding-date>
+      <software>MuseScore Studio 4.7.6</software>
+      <encoding-date>2026-11-04</encoding-date>
       <supports element="accidental" type="yes"/>
       <supports element="beam" type="yes"/>
       <supports element="print" attribute="new-page" type="yes" value="yes"/>
@@ -118,7 +118,7 @@
             <left-margin>0</left-margin>
             <right-margin>0</right-margin>
             </system-margins>
-          <top-system-distance>170</top-system-distance>
+          <top-system-distance>177.29</top-system-distance>
           </system-layout>
         </print>
       <attributes>
@@ -139,19 +139,25 @@
           <chromatic>-2</chromatic>
           </transpose>
         </attributes>
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <direction placement="above" system="only-top">
         <direction-type>
-          <words default-x="-35.98" relative-x="-127.19" relative-y="32.31" font-weight="bold" font-size="12">(
+          <words default-x="-35.98" default-y="17.92" relative-y="32.31" font-weight="bold" font-size="12">(
 </words>
           </direction-type>
         <direction-type>
-          <metronome parentheses="no" default-x="-35.98" relative-x="-127.19" relative-y="32.31">
+          <metronome parentheses="no" default-x="-35.98" default-y="17.92" relative-y="32.31">
             <beat-unit>quarter</beat-unit>
             <per-minute>56</per-minute>
             </metronome>
           </direction-type>
         <direction-type>
-          <words default-x="-35.98" relative-x="-127.19" relative-y="32.31" font-weight="bold" font-size="12"> - 66)
+          <words default-x="-35.98" default-y="17.92" relative-y="32.31" font-weight="bold" font-size="12"> - 66)
 </words>
           <words></words>
           </direction-type>
@@ -268,6 +274,17 @@
         <type>eighth</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>E</root-step>
+          </root>
+        <kind text="m" parentheses-degrees="yes">minor</kind>
+        <degree>
+          <degree-value>6</degree-value>
+          <degree-alter>-1</degree-alter>
+          <degree-type>add</degree-type>
+          </degree>
+        </harmony>
       <note default-x="337.58" default-y="-30">
         <pitch>
           <step>G</step>
@@ -344,6 +361,12 @@
         </note>
       </measure>
     <measure number="2" width="406.83">
+      <harmony print-frame="no">
+        <root>
+          <root-step>D</root-step>
+          </root>
+        <kind text="m">minor</kind>
+        </harmony>
       <note default-x="12" default-y="-45">
         <pitch>
           <step>D</step>
@@ -457,6 +480,12 @@
         <type>eighth</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="250.98" default-y="-35">
         <pitch>
           <step>F</step>
@@ -501,6 +530,13 @@
         </note>
       </measure>
     <measure number="3" width="251.36">
+      <harmony print-frame="no">
+        <root>
+          <root-step>B</root-step>
+          <root-alter>-1</root-alter>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -626,6 +662,12 @@
           <system-distance>150</system-distance>
           </system-layout>
         </print>
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="77.16" default-y="-35">
         <pitch>
           <step>F</step>
@@ -739,6 +781,12 @@
         </note>
       </measure>
     <measure number="5" width="483.56">
+      <harmony print-frame="no">
+        <root>
+          <root-step>D</root-step>
+          </root>
+        <kind text="m">minor</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -801,6 +849,12 @@
           <root-step text="">C</root-step>
           </root>
         <kind text="*">none</kind>
+        </harmony>
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
         </harmony>
       <note default-x="230.93" default-y="-40">
         <pitch>
@@ -907,6 +961,12 @@
         </forward>
       </measure>
     <measure number="6" width="420.9">
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -1018,6 +1078,17 @@
         <type>eighth</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>E</root-step>
+          </root>
+        <kind text="m" parentheses-degrees="yes">minor</kind>
+        <degree>
+          <degree-value>6</degree-value>
+          <degree-alter>-1</degree-alter>
+          <degree-type>add</degree-type>
+          </degree>
+        </harmony>
       <note default-x="231.31" default-y="-30">
         <pitch>
           <step>G</step>
@@ -1103,6 +1174,13 @@
           <system-distance>150</system-distance>
           </system-layout>
         </print>
+      <harmony print-frame="no">
+        <root>
+          <root-step>B</root-step>
+          <root-alter>-1</root-alter>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="77.16" default-y="-20">
         <pitch>
           <step>B</step>
@@ -1216,6 +1294,12 @@
         <type>eighth</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="364.61" default-y="-30">
         <pitch>
           <step>G</step>
@@ -1260,6 +1344,12 @@
         </note>
       </measure>
     <measure number="8" width="589.24">
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -1373,6 +1463,12 @@
         <type>eighth</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="299.82" default-y="-25">
         <pitch>
           <step>A</step>
@@ -1495,6 +1591,12 @@
           <top-system-distance>70</top-system-distance>
           </system-layout>
         </print>
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="77.16" default-y="-30">
         <pitch>
           <step>G</step>
@@ -1609,6 +1711,12 @@
         <type>16th</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="279.69" default-y="-35">
         <pitch>
           <step>F</step>
@@ -1653,6 +1761,13 @@
         </note>
       </measure>
     <measure number="10" width="427.18">
+      <harmony print-frame="no">
+        <root>
+          <root-step>B</root-step>
+          <root-alter>-1</root-alter>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -1766,6 +1881,12 @@
         <type>eighth</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="218.79" default-y="-25">
         <pitch>
           <step>A</step>
@@ -1819,6 +1940,12 @@
             </articulations>
           </notations>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>D</root-step>
+          </root>
+        <kind text="m">minor</kind>
+        </harmony>
       <note default-x="366.49" default-y="-30">
         <pitch>
           <step>G</step>
@@ -1838,6 +1965,12 @@
       <forward>
         <duration>4</duration>
         </forward>
+      <harmony print-frame="no">
+        <root>
+          <root-step>D</root-step>
+          </root>
+        <kind text="m">minor</kind>
+        </harmony>
       <note default-x="307.41" default-y="-35">
         <pitch>
           <step>F</step>
@@ -1895,6 +2028,12 @@
         </note>
       </measure>
     <measure number="11" width="360.74">
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -2008,6 +2147,12 @@
         <type>16th</type>
         <stem>up</stem>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="214.53" default-y="-50">
         <pitch>
           <step>C</step>
