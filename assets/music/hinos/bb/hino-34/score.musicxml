@@ -7,8 +7,8 @@
   <identification>
     <creator type="composer">William Vincent Wallace</creator>
     <encoding>
-      <software>MuseScore Studio 4.7.5</software>
-      <encoding-date>2026-10-12</encoding-date>
+      <software>MuseScore Studio 4.7.6</software>
+      <encoding-date>2026-11-07</encoding-date>
       <supports element="accidental" type="yes"/>
       <supports element="beam" type="yes"/>
       <supports element="print" attribute="new-page" type="yes" value="yes"/>
@@ -122,7 +122,7 @@
             <left-margin>0</left-margin>
             <right-margin>0</right-margin>
             </system-margins>
-          <top-system-distance>170</top-system-distance>
+          <top-system-distance>174.28</top-system-distance>
           </system-layout>
         </print>
       <attributes>
@@ -143,18 +143,24 @@
           <chromatic>-2</chromatic>
           </transpose>
         </attributes>
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <direction placement="above" system="only-top">
         <direction-type>
-          <words default-x="-35.98" relative-x="-115.53" relative-y="40" font-weight="bold" font-size="12">(</words>
+          <words default-x="-35.98" default-y="7.16" relative-y="40" font-weight="bold" font-size="12">(</words>
           </direction-type>
         <direction-type>
-          <metronome parentheses="no" default-x="-35.98" relative-x="-115.53" relative-y="40">
+          <metronome parentheses="no" default-x="-35.98" default-y="7.16" relative-y="40">
             <beat-unit>quarter</beat-unit>
             <per-minute>50</per-minute>
             </metronome>
           </direction-type>
         <direction-type>
-          <words default-x="-35.98" relative-x="-115.53" relative-y="40" font-weight="bold" font-size="12"> - 60)</words>
+          <words default-x="-35.98" default-y="7.16" relative-y="40" font-weight="bold" font-size="12"> - 60)</words>
           </direction-type>
         <sound tempo="50"/>
         </direction>
@@ -352,6 +358,12 @@
         </note>
       </measure>
     <measure number="3" width="265.55">
+      <harmony print-frame="no">
+        <root>
+          <root-step>D</root-step>
+          </root>
+        <kind text="m">minor</kind>
+        </harmony>
       <note default-x="12.76" default-y="-35">
         <pitch>
           <step>F</step>
@@ -364,7 +376,7 @@
         <stem>up</stem>
         <lyric number="1" default-y="-58.94" relative-y="-30">
           <syllabic>end</syllabic>
-          <text>ccu</text>
+          <text>ceu</text>
           </lyric>
         <lyric number="2" default-y="-83.36" relative-y="-30">
           <syllabic>single</syllabic>
@@ -464,6 +476,12 @@
           <text font-family="FreeSerif">a</text>
           </lyric>
         </note>
+      <harmony print-frame="no">
+        <root>
+          <root-step>G</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="132.17" default-y="-35">
         <pitch>
           <step>F</step>
@@ -519,6 +537,12 @@
         </note>
       </measure>
     <measure number="4" width="256.25">
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-40">
         <pitch>
           <step>E</step>
@@ -680,6 +704,12 @@
           </root>
         <kind text="*">none</kind>
         </harmony>
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -772,6 +802,12 @@
         </note>
       </measure>
     <measure number="7" width="262.69">
+      <harmony print-frame="no">
+        <root>
+          <root-step>A</root-step>
+          </root>
+        <kind text="m">minor</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -926,6 +962,13 @@
         </note>
       </measure>
     <measure number="8" width="266.37">
+      <harmony print-frame="no">
+        <root>
+          <root-step>B</root-step>
+          <root-alter>-1</root-alter>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="15.12" default-y="-30">
         <pitch>
           <step>G</step>
@@ -1091,6 +1134,12 @@
         </note>
       </measure>
     <measure number="9" width="257.67">
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-35">
         <pitch>
           <step>F</step>
@@ -1254,6 +1303,12 @@
         </forward>
       </measure>
     <measure number="10" width="137.32">
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        </harmony>
       <note default-x="12" default-y="-50">
         <pitch>
           <step>C</step>

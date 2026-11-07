@@ -2,9 +2,10 @@
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
   <identification>
+    <creator type="lyricist">Cifra: Djames Suhanko</creator>
     <encoding>
-      <software>MuseScore Studio 4.7.5</software>
-      <encoding-date>2026-10-12</encoding-date>
+      <software>MuseScore Studio 4.7.6</software>
+      <encoding-date>2026-11-07</encoding-date>
       <supports element="accidental" type="yes"/>
       <supports element="beam" type="yes"/>
       <supports element="print" attribute="new-page" type="yes" value="yes"/>
@@ -76,6 +77,10 @@
     <credit-type>composer</credit-type>
     <credit-words default-x="1133.86" default-y="1527.08" justify="right" valign="bottom" font-size="12">Hubert Platt Main</credit-words>
     </credit>
+  <credit page="1">
+    <credit-type>lyricist</credit-type>
+    <credit-words default-x="56.69" default-y="1527.08" justify="left" valign="bottom" font-size="12">Cifra: Djames Suhanko</credit-words>
+    </credit>
   <part-list>
     <part-group type="start" number="1">
       <group-symbol>brace</group-symbol>
@@ -141,16 +146,16 @@
         </attributes>
       <direction placement="above" system="only-top">
         <direction-type>
-          <words default-x="-35.98" relative-x="-104.92" relative-y="29.92" font-weight="bold" font-size="12">(</words>
+          <words default-x="-35.98" relative-y="29.92" font-weight="bold" font-size="12">(</words>
           </direction-type>
         <direction-type>
-          <metronome parentheses="no" default-x="-35.98" relative-x="-104.92" relative-y="29.92">
+          <metronome parentheses="no" default-x="-35.98" relative-y="29.92">
             <beat-unit>quarter</beat-unit>
             <per-minute>52</per-minute>
             </metronome>
           </direction-type>
         <direction-type>
-          <words default-x="-35.98" relative-x="-104.92" relative-y="29.92" font-weight="bold" font-size="12"> - 72)</words>
+          <words default-x="-35.98" relative-y="29.92" font-weight="bold" font-size="12"> - 72)</words>
           </direction-type>
         <sound tempo="52"/>
         </direction>
