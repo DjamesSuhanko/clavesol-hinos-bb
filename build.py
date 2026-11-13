@@ -87,5 +87,7 @@ else:
     print('Aviso: sem cardapio.json/sha256 na raiz; publicacao do catalogo ignorada')
 # <<< CLAVE SOL CARROSSEL E CATALOGO - FIM
 
+from app_package import build_app_package
+build_app_package(OUT, catalog, config["collection"])
 finish_build(OUT,BASE)
 print(f"{len(catalog.scores)} partituras validadas; site em {OUT}")
